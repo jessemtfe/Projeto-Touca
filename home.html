@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <link rel="icon" type="image/png" href="./img/touca.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Turma da Touca - Aprenda Python</title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: url('./img/hero-bg.jpg') no-repeat center/cover fixed;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        
+        header {
+            background: #fffffff2;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        header nav.container {
+            max-width: none;
+            width: 100%;
+            margin: 0;
+            padding: 1rem 20px;
+        }
+
+        nav {
+            display: flex;
+                        justify-content: flex-start;
+            align-items: center;
+        }
+        .logo img:first-child {
+            width: 150px;
+            height: auto;
+        }
+
+        .logo img:last-child {
+            width: 80px;
+            height: auto;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+            margin-right: auto;
+            margin-right: auto;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            margin-left: auto;
+            margin-left: auto;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+        }
+
+        .nav-links a:hover {
+            color: #4FC3F7;
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        
+        .hero {
+            text-align: center;
+            padding: 120px 0 80px;
+            color: #E53935;
+        }
+
+        .hero span {
+            color: #4FC3F7;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            color: #000000; 
+            text-shadow: 2px 2px 6px rgba(0,0,0,0.7);
+            background-color: rgba(255, 255, 255, 0.65); 
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 14px 36px;
+            background: linear-gradient(135deg, #ff5a5f, #d50000);
+            color: white;
+            text-decoration: none;
+            border-radius: 40px;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+            box-shadow: 0 14px 30px rgba(229, 89, 95, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.35);
+        }
+
+        .btn:hover {
+            background: linear-gradient(135deg, #ff7b7f, #b71c1c);
+            transform: translateY(-3px);
+            box-shadow: 0 18px 40px rgba(229, 89, 95, 0.32);
+        }
+
+        
+        .videos {
+            padding: 80px 0;
+            background: white;
+        }
+
+        .videos h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: #333;
+            position: relative;
+        }
+
+        .touca-c {
+            position: absolute;
+            width: 38px;
+            height: 38px;
+            left: -16px;
+            top: 2px;
+            transform: rotate(-25deg);
+        }
+
+        .letra-c {
+            position: relative;
+            display: inline-block;
+        }
+
+        .videos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .video-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+
+        .video-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .video-card iframe {
+            width: 100%;
+            height: 200px;
+            border: none;
+        }
+
+        .video-info {
+            padding: 1.5rem;
+        }
+
+        .video-info h3 {
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .video-info p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        
+        .features {
+            padding: 80px 0;
+            background: #f8f9fa;
+        }
+
+        .features h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: #333;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            text-align: center;
+            padding: 2rem;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            color: #E53935;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            color: #333;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card p {
+            color: #666;
+        }
+
+        footer {
+            background: #333;
+            color: white;
+            padding: 3rem 0;
+            text-align: center;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 1rem;
+            color: #E53935;
+        }
+
+        .footer-section p,
+        .footer-section a {
+            color: #ccc;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-section a:hover {
+            color: #E53935;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-links a {
+            font-size: 1.5rem;
+            color: #E53935;
+        }
+
+        .copyright {
+            border-top: 1px solid #444;
+            padding-top: 2rem;
+            color: #888;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .videos-grid,
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <nav class="container">
+            <a class="logo" href="home.html">
+                <img src="./img/Copilot_20260322_143438.png" alt="Cruzeiro do Sul">
+                <img src="./img/Logo da Touca.png" alt="Turma da Touca">
+            </a>
+            <ul class="nav-links">
+                <li><a href="#videos">Vídeos</a></li>
+                <li><a href="atividades.html">Atividades</a></li>
+                <li id="nav-login"><a href="login.html">Login</a></li>
+                <li id="nav-logout" style="display:none;"><a href="#" onclick="fazerLogout(event)">Sair</a></li>
+                <li><a href="ranking.html">Ranking</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <h1>Bem-vindo à <span>Plataforma de Cursos!</span></h1>
+            <p>Aprenda Python de forma gratuita e divertida com a Turma da Touca em parceria com a Universidade Cruzeiro do Sul. Aqui você vai descobrir como programar passo a passo, com aulas práticas e atividades que tornam o aprendizado leve e acessível para todos. </p>
+            <a href="#videos" class="btn">Ver Vídeos do Curso</a>
+        </div>
+    </section>
+
+    <section class="videos" id="videos">
+        <div class="container">
+            <h2><span class="letra-c"><img class="touca-c" src="./img/touca.png" alt="Touca">C</span>urso de Python - Vídeos Gratuitos</h2>
+            <div class="videos-grid">
+                <div class="video-card">
+                    <a href="aula1.html" style="text-decoration: none; color: inherit;">
+                        <iframe src="https://www.youtube.com/embed/rfscVS0vtbw" allowfullscreen></iframe>
+                        <div class="video-info">
+                            <h3>Aula 1: Apresentando a Matéria</h3>
+                            <p>Conheça o mundo da programação e o que vamos aprender</p>
+                        </div>
+                    </a>
+                </div>
+                <div class="video-card">
+                    <a href="aula2.html" style="text-decoration: none; color: inherit;">
+                        <iframe src="https://www.youtube.com/embed/Mp0vhMDI7fA" allowfullscreen></iframe>
+                        <div class="video-info">
+                            <h3>Aula 2: Lógica de Programação e Algoritmo</h3>
+                            <p>Entenda como pensar como um programador</p>
+                        </div>
+                    </a>
+                </div>
+                <div class="video-card">
+                    <a href="aula3.html" style="text-decoration: none; color: inherit;">
+                        <iframe src="https://www.youtube.com/embed/0LB3FSfjF3c" allowfullscreen></iframe>
+                        <div class="video-info">
+                            <h3>Aula 3: Introdução à Variáveis</h3>
+                            <p>Aprenda sobre variáveis e tipos de dados</p>
+                        </div>
+                    </a>
+                </div>
+                <div class="video-card">
+                    <a href="aula4.html" style="text-decoration: none; color: inherit;">
+                        <iframe src="https://www.youtube.com/embed/1-WT-0BJuMs" allowfullscreen></iframe>
+                        <div class="video-info">
+                            <h3>Aula 4: Operadores Matemáticos</h3>
+                            <p>Operações aritméticas e expressões matemáticas</p>
+                        </div>
+                    </a>
+                </div>
+                <div class="video-card">
+                    <a href="aula5.html" style="text-decoration: none; color: inherit;">
+                        <iframe src="https://www.youtube.com/embed/s8XjEuplx_U" allowfullscreen></iframe>
+                        <div class="video-info">
+                            <h3>Aula 5: IF / ELSE</h3>
+                            <p>Estruturas condicionais para tomada de decisões</p>
+                        </div>
+                    </a>
+                </div>
+                <div class="video-card">
+                    <a href="aula6.html" style="text-decoration: none; color: inherit;">
+                        <iframe src="https://www.youtube.com/embed/0LB3FSfjF3c" allowfullscreen></iframe>
+                        <div class="video-info">
+                            <h3>Aula 6: For</h3>
+                            <p>Loop for para repetições controladas</p>
+                        </div>
+                    </a>
+                </div>
+                <div class="video-card">
+                    <a href="aula7.html" style="text-decoration: none; color: inherit;">
+                        <iframe src="https://www.youtube.com/embed/0LB3FSfjF3c" allowfullscreen></iframe>
+                        <div class="video-info">
+                            <h3>Aula 7: While</h3>
+                            <p>Loop while para repetições condicionais</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <div style="text-align: center;">
+                <a href="atividades.html" class="btn">Fazer Atividades Práticas</a>
+            </div>
+        </div>
+    </section>
+    <section class="features">
+        <div class="container">
+            <h2>Missão e Propósito</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🌍</div>
+                    <h3>Inclusão Digital</h3>
+                    <p>Promover acesso à tecnologia e educação para todos.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💡</div>
+                    <h3>Formação para o Futuro</h3>
+                    <p>Capacitar jovens e adultos para carreiras de sucesso.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🤝</div>
+                    <h3>Comunidade e Solidariedade</h3>
+                    <p>Fortalecer laços sociais com ações colaborativas.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🚀</div>
+                    <h3>Oportunidades de Crescimento</h3>
+                    <p>Gerar impacto real com desenvolvimento profissional.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Criadores</h3>
+                    <p>Este projeto foi desenvolvido por um grupo de estudantes da Universidade Cruzeiro do Sul, com o objetivo de criar uma plataforma de cursos online gratuita e acessível para a comunidade atendida pela Turma da Touca. A iniciativa visa promover a inclusão digital e oferecer oportunidades de aprendizado em tecnologia para jovens e adultos na Zona Sul de São Paulo.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Links Úteis</h3>
+                    <a href="#videos">Vídeos do Curso</a>
+                    <a href="atividades.html">Atividades</a>
+                    <a href="ranking.html">Ranking</a>
+                    <a href="login.html">Login/Cadastro</a>
+                </div>
+                <div class="footer-section">
+                    <h3>Contato</h3>
+                    <p>Email: administracao@turmadatouca.org.br</p>
+                    <p>Telefone: +55 11 5825-7604</p>
+                    <div class="social-links">
+                        <a href="#"><i class='bx bxl-facebook'></i></a>
+                        <a href="#"><i class='bx bxl-instagram'></i></a>
+                        <a href="#"><i class='bx bxl-youtube'></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2026 Turma da Touca. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+        window.addEventListener('DOMContentLoaded', () => {
+            const usuarioId = localStorage.getItem('usuarioId');
+            const username = localStorage.getItem('username');
+            const navLogin = document.getElementById('nav-login');
+            const navLogout = document.getElementById('nav-logout');
+
+            if (usuarioId && username) {
+                console.log(`Bem-vindo, ${username}!`);
+                navLogin.style.display = 'none';
+                navLogout.style.display = 'block';
+            } else {
+                navLogin.style.display = 'block';
+                navLogout.style.display = 'none';
+            }
+        });
+
+        function fazerLogout(event) {
+            event.preventDefault();
+            
+            localStorage.removeItem('usuarioId');
+            localStorage.removeItem('username');
+            
+            window.location.href = 'login.html';
+        }
+    </script>
+</body>
+
+</html>

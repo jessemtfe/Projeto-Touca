@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula 4: Operadores Matemáticos - Turma da Touca</title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f8f9fa;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        header nav.container {
+            max-width: none;
+            width: 100%;
+            margin: 0;
+            padding: 1rem 20px;
+        }
+
+        nav {
+            display: flex;
+                        justify-content: flex-start;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .logo img:first-child {
+        width: 150px;
+        height: auto;
+        }
+
+        .logo img:last-child {
+        width: 80px;
+        height: auto;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+            margin-right: auto;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            margin-left: auto;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+        }
+
+        .nav-links a:hover {
+            color: #E53935;
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #E53935;
+            padding: 60px 0;
+            text-align: center;
+            background: url('./img/hero-bg.jpg') no-repeat center/cover fixed;
+        }
+        .hero span {
+            color: #4FC3F7;
+        }
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        .breadcrumb {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .breadcrumb a {
+            color: #4FC3F7;
+            text-decoration: underline;
+        }
+        .conteudo {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            padding: 60px 0;
+        }
+
+        .video-section {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .video-section h2 {
+            color: #333;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .video-info {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .video-info h3 {
+            color: #E53935;
+            margin-bottom: 1rem;
+        }
+
+        .video-info ul {
+            padding-left: 1.5rem;
+        }
+
+        .video-info li {
+            margin-bottom: 0.5rem;
+            color: #555;
+        }
+
+        .atividades-section {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            height: fit-content;
+        }
+
+        .atividades-section h2 {
+            color: #333;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .atividade-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid #E53935;
+        }
+
+        .atividade-card h3 {
+            color: #333;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .atividade-card p {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: #E53935;
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s;
+            margin: 1rem;
+        }
+
+        .btn:hover {
+            background: #E53935;
+            transform: translateY(-2px);
+        }
+
+        .navegacao-aulas {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+            padding: 2rem 0;
+            border-top: 1px solid #eee;
+        }
+
+        .nav-btn {
+            padding: 12px 24px;
+            background: #f8f9fa;
+            color: #E53935;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: 2px solid #E53935;
+        }
+
+        .nav-btn:hover {
+            background: #E53935;
+            color: white;
+        }
+
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background: white;
+            margin: 5% auto;
+            padding: 2rem;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .close {
+            position: absolute;
+            right: 20px;
+            top: 15px;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .atividade-form textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            margin: 1rem 0;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 150px;
+        }
+
+        footer {
+            background: #333;
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            margin-top: 4rem;
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .navegacao-aulas {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .nav-btn {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <nav class="container">
+            <a class="logo" href="home.html">
+                <img src="./img/Copilot_20260322_143438.png" alt="Cruzeiro do Sul">
+                <img src="./img/Logo da Touca.png" alt="Turma da Touca">
+            </a>
+            <ul class="nav-links">
+                <li><a href="home.html">Inicio</a></li>
+                <li><a href="atividades.html">Atividades</a></li>
+                <li id="nav-login"><a href="login.html">Login</a></li>
+                <li id="nav-logout" style="display:none;"><a href="#" onclick="fazerLogout(event)">Sair</a></li>
+                <li><a href="ranking.html">Ranking</a></li>
+            </ul>
+        </nav>
+    </header>
+    <section class="hero">
+        <div class="container">
+            <h1>Aula 4: <span>Operadores Matemáticos</span></h1>
+            <p style="color: #000000;">Operações aritméticas e expressões matemáticas</p>
+            <div class="breadcrumb"><a href="home.html">Home</a> > <a href="#videos">Vídeos</a> > Aula 4</div>
+        </div>
+    </section>
+    <section class="conteudo container">
+        
+        <div class="video-section">
+            <h2>🎥 Vídeo da Aula</h2>
+            <div class="video-container">
+                <iframe src="https://www.youtube.com/embed/1-WT-0BJuMs" allowfullscreen></iframe>
+            </div>
+
+            <div class="video-info">
+                <h3>📚 O que você vai aprender:</h3>
+                <ul>
+                    <li>Operadores aritméticos: +, -, *, /,
+                    <li>Precedência de operadores</li>
+                    <li>Operadores de comparação: ==, !=, >, <,>=, <=< /li>
+                    <li>Operadores lógicos: and, or, not</li>
+                    <li>Operadores de atribuição: +=, -=, *=, /=</li>
+                    <li>Combinação de expressões</li>
+                </ul>
+            </div>
+        </div>
+
+        
+        <div class="atividades-section">
+            <h2>📝 Atividades da Aula</h2>
+            <div class="atividade-card">
+                <h3>Atividade 1: Calculadora</h3>
+                <p>Faça um programa que leia dois números e mostre soma, subtração, multiplicação e divisão.</p>
+                <button class="btn" onclick="abrirAtividade(1)">Enviar Solução</button>
+            </div>
+            <div class="atividade-card">
+                <h3>Atividade 2: Comparação de Números</h3>
+                <p>Leia dois números e informe se o primeiro é maior, menor ou igual.</p>
+                <button class="btn" onclick="abrirAtividade(2)">Enviar Solução</button>
+            </div>
+            <div class="atividade-card">
+                <h3>Atividade 3: Par ou Ímpar</h3>
+                <p>Verifique se um número é par ou ímpar usando operador módulo.</p>
+                <button class="btn" onclick="abrirAtividade(3)">Enviar Solução</button>
+            </div>
+            <div class="atividade-card">
+                <h3>Desafio Extra</h3>
+                <p>Crie um conversor de notas (0-100) para conceitos A/B/C/D/F.</p>
+                <button class="btn secondary" onclick="abrirAtividade(4)">Enviar Desafio</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="container">
+        <div class="navegacao-aulas">
+            <a href="aula3.html" class="nav-btn">← Aula Anterior</a>
+            <a href="aula5.html" class="nav-btn">Próxima Aula →</a>
+        </div>
+    </section>
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Turma da Touca. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    
+    <div id="modalAtividade" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="fecharModal()">&times;</span>
+            <h2 id="tituloAtividade">Enviar Atividade</h2>
+            <p id="descricaoAtividade">Descrição da atividade...</p>
+
+            <form class="atividade-form" onsubmit="enviarAtividade(event)">
+                <textarea id="codigo" placeholder="Cole seu código Python aqui..." rows="10" required></textarea>
+                <button type="submit" class="btn">Enviar e Avaliar</button>
+            </form>
+            <div id="resultado" style="display:none; margin-top:20px; padding:15px; border-radius:8px; text-align:center;">
+                <h3>Avaliação</h3>
+                <p id="notaResultado" style="font-size:1.5rem; font-weight:bold; margin:10px 0;"></p>
+                <p id="feedback" style="color:#666;"></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const usuarioId = localStorage.getItem('usuarioId');
+            const username = localStorage.getItem('username');
+            const navLogin = document.getElementById('nav-login');
+            const navLogout = document.getElementById('nav-logout');
+
+            if (usuarioId && username) {
+
+                console.log(`Bem-vindo, ${username}!`);
+                navLogin.style.display = 'none';
+                navLogout.style.display = 'block';
+            } else {
+
+                navLogin.style.display = 'block';
+                navLogout.style.display = 'none';
+            }
+        });
+
+        function fazerLogout(event) {
+            event.preventDefault();
+            
+
+            localStorage.removeItem('usuarioId');
+            localStorage.removeItem('username');
+            
+
+            window.location.href = 'login.html';
+        }
+
+        const API_URL = "";
+        let atividadeAtual = null;
+
+        const atividades = {
+            1: {
+                titulo: "Atividade 1: Calculadora",
+                descricao: "Faça um programa que leia dois números e mostre soma, subtração, multiplicação e divisão."
+            },
+            2: {
+                titulo: "Atividade 2: Comparação de Números",
+                descricao: "Leia dois números e informe se o primeiro é maior, menor ou igual."
+            },
+            3: {
+                titulo: "Atividade 3: Par ou Ímpar",
+                descricao: "Verifique se um número é par ou ímpar usando operador módulo."
+            },
+            4: {
+                titulo: "Desafio Extra",
+                descricao: "Crie um conversor de notas (0-100) para conceitos A/B/C/D/F."
+            }
+        };
+
+        async function verificarConclusaoAtividade(id) {
+            const usuarioId = localStorage.getItem('usuarioId');
+            if (!usuarioId) return false;
+
+            try {
+                const response = await fetch(`${API_URL}/atividades/${usuarioId}/${id}/status`);
+                const dados = await response.json();
+
+                if (response.ok && dados.concluido) {
+                    alert('Você já concluiu essa atividade com nota máxima. Não é possível reabrir.');
+                    return true;
+                }
+            } catch (erro) {
+                console.warn('Não foi possível verificar status da atividade:', erro);
+            }
+
+            return false;
+        }
+
+        async function abrirAtividade(id) {
+            const usuarioId = localStorage.getItem('usuarioId');
+            if (!usuarioId) {
+                alert('Você precisa fazer login para enviar atividades!');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const concluido = await verificarConclusaoAtividade(id);
+            if (concluido) return;
+
+            atividadeAtual = id;
+            const atividade = atividades[id];
+
+            document.getElementById('tituloAtividade').textContent = atividade.titulo;
+            document.getElementById('descricaoAtividade').textContent = atividade.descricao;
+            document.getElementById('modalAtividade').style.display = 'block';
+        }
+
+        function fecharModal() {
+            document.getElementById('modalAtividade').style.display = 'none';
+            atividadeAtual = null;
+        }
+
+        async function enviarAtividade(event) {
+            event.preventDefault();
+
+            const usuarioId = localStorage.getItem('usuarioId');
+            const codigo = document.getElementById('codigo').value;
+
+            if (!codigo.trim()) {
+                alert('❌ Por favor, escreva o código!');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/atividades`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        usuarioId, 
+                        atividadeId: atividadeAtual, 
+                        codigo 
+                    })
+                });
+
+                const dados = await response.json();
+
+                if (response.ok) {
+
+                    const resultadoDiv = document.getElementById('resultado');
+                    const notaResultado = document.getElementById('notaResultado');
+                    const feedback = document.getElementById('feedback');
+                    
+
+                    let cor = '#4CAF50';
+                    let msg = '🎉 Excelente trabalho!';
+                    
+                    if (dados.nota >= 10) {
+                        cor = '#4CAF50';
+                        msg = '🎉 Perfeito! Nota máxima!';
+                    } else if (dados.nota >= 8) {
+                        cor = '#8BC34A';
+                        msg = '👏 Muito bom! Continue assim!';
+                    } else if (dados.nota >= 6) {
+                        cor = '#FFC107';
+                        msg = '📚 Bom trabalho! Há pontos a melhorar.';
+                    } else if (dados.nota >= 5) {
+                        cor = '#FF9800';
+                        msg = '💪 Tentativa aceitável, mas revise os conceitos.';
+                    } else {
+                        cor = '#F44336';
+                        msg = '❌ Precisa melhorar. Revise a matéria!';
+                    }
+                    
+                    resultadoDiv.style.backgroundColor = cor + '20';
+                    resultadoDiv.style.borderLeft = `4px solid ${cor}`;
+                    notaResultado.textContent = `${dados.nota}/10`;
+                    notaResultado.style.color = cor;
+                    feedback.textContent = msg;
+                    resultadoDiv.style.display = 'block';
+                    
+
+                    setTimeout(() => {
+                        document.getElementById('codigo').value = '';
+                    }, 500);
+                } else {
+                    alert(`❌ Erro: ${dados.msg}`);
+                }
+            } catch (erro) {
+                alert('❌ Erro ao conectar ao servidor!');
+                console.error(erro);
+            }
+        }
+
+
+        window.onclick = function (event) {
+            const modal = document.getElementById('modalAtividade');
+            if (event.target == modal) {
+                fecharModal();
+            }
+        }
+    </script>
+</body>
+
+</html>

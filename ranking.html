@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ranking - Turma da Touca</title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f8f9fa;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        
+        header {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        header nav.container {
+            max-width: none;
+            width: 100%;
+            margin: 0;
+            padding: 1rem 20px;
+        }
+
+        nav {
+            display: flex;
+                        justify-content: flex-start;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .logo img:first-child {
+        width: 150px;
+        height: auto;
+        }
+
+        .logo img:last-child {
+        width: 80px;
+        height: auto;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+            margin-right: auto;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            margin-left: auto;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: #4FC3F7;
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #E53935;
+            padding: 80px 0;
+            text-align: center;
+            background: url('./img/hero-bg.jpg') no-repeat center/cover fixed;
+        }
+
+        .hero span {
+            color: #4FC3F7;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        
+        .ranking {
+            padding: 80px 0;
+        }
+
+        .ranking h2 {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 3rem;
+            color: #333;
+        }
+
+        .ranking-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .ranking-header {
+            background: #4FC3F7;
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .ranking-list {
+            list-style: none;
+        }
+
+        .ranking-item {
+            display: flex;
+            align-items: center;
+            padding: 1.5rem;
+            border-bottom: 1px solid #eee;
+            transition: background 0.3s;
+        }
+
+        .ranking-item:hover {
+            background: #f8f9fa;
+        }
+
+        .ranking-item:last-child {
+            border-bottom: none;
+        }
+
+        .position {
+            width: 60px;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .position.gold {
+            color: #ffd700;
+        }
+
+        .position.silver {
+            color: #c0c0c0;
+        }
+
+        .position.bronze {
+            color: #cd7f32;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #667eea;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            margin-right: 1rem;
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .user-stats {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .score {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .medal {
+            font-size: 1.5rem;
+            margin-left: 1rem;
+        }
+
+        .medal.gold {
+            color: #ffd700;
+        }
+
+        .medal.silver {
+            color: #c0c0c0;
+        }
+
+        .medal.bronze {
+            color: #cd7f32;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+        }
+
+        .refresh-btn {
+            display: inline-block;
+            margin: 2rem auto;
+            padding: 14px 36px;
+            background: linear-gradient(135deg, #4fc3f7, #0f7cff);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+            box-shadow: 0 14px 30px rgba(15, 124, 255, 0.2);
+            letter-spacing: 0.02em;
+        }
+
+        .refresh-btn:hover {
+            background: linear-gradient(135deg, #6ec8ff, #1c71ff);
+            transform: translateY(-3px);
+            box-shadow: 0 18px 36px rgba(15, 124, 255, 0.28);
+        }
+
+        
+        footer {
+            background: #333;
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            margin-top: 4rem;
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .ranking-item {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .user-avatar {
+                margin: 0 auto 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    
+    <header>
+        <nav class="container">
+            <a class="logo" href="home.html">
+                <img src="./img/Copilot_20260322_143438.png" alt="Cruzeiro do Sul">
+                <img src="./img/Logo da Touca.png" alt="Turma da Touca">
+            </a>
+            <ul class="nav-links">
+                <li><a href="home.html">Inicio</a></li>
+                <li><a href="atividades.html">Atividades</a></li>
+                <li id="nav-login"><a href="login.html">Login</a></li>
+                <li id="nav-logout" style="display:none;"><a href="#" onclick="fazerLogout(event)">Sair</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    
+    <section class="hero">
+        <div class="container">
+            <h1>🏆 Ranking dos<span> Estudantes</span></h1>
+            <p style="color: #000000;">Veja quem são os melhores alunos do curso!</p>
+        </div>
+    </section>
+
+    
+    <section class="ranking">
+        <div class="container">
+            <h2>Classificação Geral</h2>
+            <div class="ranking-container">
+                <div class="ranking-header">
+                    <h3>Top Estudantes</h3>
+                </div>
+                <ul class="ranking-list" id="rankingList">
+                    
+                </ul>
+            </div>
+            <button class="refresh-btn" onclick="carregarRanking()">Atualizar Ranking</button>
+        </div>
+    </section>
+
+    
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Turma da Touca. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <script>
+        const API_URL = "";
+
+
+        function verificarSessao() {
+            const usuarioId = localStorage.getItem('usuarioId');
+            const username = localStorage.getItem('username');
+            const navLogin = document.getElementById('nav-login');
+            const navLogout = document.getElementById('nav-logout');
+
+            if (usuarioId && username) {
+
+                console.log(`Bem-vindo, ${username}!`);
+                navLogin.style.display = 'none';
+                navLogout.style.display = 'block';
+            } else {
+
+                navLogin.style.display = 'block';
+                navLogout.style.display = 'none';
+            }
+        }
+
+        function fazerLogout(event) {
+            event.preventDefault();
+            
+
+            localStorage.removeItem('usuarioId');
+            localStorage.removeItem('username');
+            
+
+            window.location.href = 'login.html';
+        }
+
+        async function carregarRanking() {
+            try {
+                const response = await fetch(`${API_URL}/ranks`);
+                const dados = await response.json();
+
+                if (response.ok) {
+                    exibirRanking(dados);
+                } else {
+                    console.error('Erro ao carregar ranking:', dados);
+                    document.getElementById('rankingList').innerHTML =
+                        '<li class="no-data">Erro ao carregar ranking. Tente novamente.</li>';
+                }
+            } catch (erro) {
+                console.error('Erro de conexão:', erro);
+                document.getElementById('rankingList').innerHTML =
+                    '<li class="no-data">Erro de conexão. Verifique se o servidor está rodando.</li>';
+            }
+        }
+
+        function exibirRanking(usuarios) {
+            const rankingList = document.getElementById('rankingList');
+
+            if (!usuarios || usuarios.length === 0) {
+                rankingList.innerHTML = '<li class="no-data">Nenhum usuário encontrado. Seja o primeiro a enviar atividades!</li>';
+                return;
+            }
+
+            rankingList.innerHTML = usuarios.map((usuario, index) => {
+                const posicao = index + 1;
+                let posicaoClass = '';
+                let medalClass = '';
+
+                if (posicao === 1) {
+                    posicaoClass = 'gold';
+                    medalClass = 'gold';
+                } else if (posicao === 2) {
+                    posicaoClass = 'silver';
+                    medalClass = 'silver';
+                } else if (posicao === 3) {
+                    posicaoClass = 'bronze';
+                    medalClass = 'bronze';
+                }
+
+                const inicial = usuario.username ? usuario.username.charAt(0).toUpperCase() : '?';
+                const pontuacao = usuario.pontuacaoTotal || 0;
+                const atividades = usuario.totalAtividades || 0;
+
+                return `
+                    <li class="ranking-item">
+                        <div class="position ${posicaoClass}">#${posicao}</div>
+                        <div class="user-avatar">${inicial}</div>
+                        <div class="user-info">
+                            <div class="user-name">${usuario.username || 'Usuário'}</div>
+                            <div class="user-stats">${atividades} atividades completadas</div>
+                        </div>
+                        <div class="score">${pontuacao} pts</div>
+                        ${posicao <= 3 ? `<div class="medal ${medalClass}">🏆</div>` : ''}
+                    </li>
+                `;
+            }).join('');
+        }
+
+
+        window.addEventListener('DOMContentLoaded', () => {
+            verificarSessao();
+            carregarRanking();
+        });
+    </script>
+</body>
+
+</html>

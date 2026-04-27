@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atividades - Turma da Touca</title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: url('./img/hero-bg.jpg') no-repeat center/cover fixed;
+            background: #f8f9fa;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        
+        header {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        header nav.container {
+            max-width: none;
+            width: 100%;
+            margin: 0;
+            padding: 1rem 20px;
+        }
+
+        nav {
+            display: flex;
+                        justify-content: flex-start;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+       .logo img:first-child {
+        width: 150px;
+        height: auto;
+        }
+
+        .logo img:last-child {
+        width: 80px;
+        height: auto;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+            margin-right: auto;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            margin-left: auto;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: #4FC3F7;
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #E53935;
+            padding: 80px 0;
+            text-align: center;
+            background: url('./img/hero-bg.jpg') no-repeat center/cover fixed;
+        }
+
+        .hero span {
+            color: #4FC3F7;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        
+        .atividades {
+            padding: 80px 0;
+        }
+
+        .atividades h2 {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 3rem;
+            color: #333;
+        }
+
+        .atividades-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .atividade-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+
+        .atividade-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .atividade-icon {
+            font-size: 3rem;
+            color: #E53935;
+            margin-bottom: 1rem;
+        }
+
+        .atividade-card h3 {
+            color: #333;
+            margin-bottom: 1rem;
+        }
+
+        .atividade-card p {
+            color: #666;
+            margin-bottom: 1.5rem;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #E53935;
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            background: #d62724;
+            transform: translateY(-2px);
+        }
+
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background: white;
+            margin: 10% auto;
+            padding: 2rem;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+        }
+
+        .close {
+            position: absolute;
+            right: 20px;
+            top: 15px;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .atividade-form textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            margin: 1rem 0;
+            font-family: inherit;
+            resize: vertical;
+        }
+
+        .atividade-form input[type="number"] {
+            width: 100%;
+            padding: 0.5rem;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            margin: 1rem 0;
+        }
+
+        
+        footer {
+            background: #333;
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            margin-top: 4rem;
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .atividades-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    
+    <header>
+        <nav class="container">
+            <a class="logo" href="home.html">
+                <img src="./img/Copilot_20260322_143438.png" alt="Cruzeiro do Sul">
+                <img src="./img/Logo da Touca.png" alt="Turma da Touca">
+            </a>
+            <ul class="nav-links">
+                <li><a href="home.html">Inicio</a></li>
+                <li id="nav-login"><a href="login.html">Login</a></li>
+                <li id="nav-logout" style="display:none;"><a href="#" onclick="fazerLogout(event)">Sair</a></li>
+                <li><a href="ranking.html">Ranking</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    
+    <section class="hero">
+        <div class="container">
+            <h1>Atividades <span>Práticas</span></h1>
+            <p style="color: #000000;">Coloque em prática o que aprendeu nos vídeos</p>
+        </div>
+    </section>
+
+    
+    <section class="atividades">
+        <div class="container">
+            <h2>Exercícios do Curso</h2>
+            <div class="atividades-grid">
+                <div class="atividade-card">
+                    <div class="atividade-icon"><i class='bx bx-code-alt'></i></div>
+                    <h3>Exercício 1: Hello World</h3>
+                    <p>Crie seu primeiro programa em Python que imprime "Olá, mundo!"</p>
+                    <button class="btn" onclick="abrirAtividade(1)">Fazer Exercício</button>
+                </div>
+                <div class="atividade-card">
+                    <div class="atividade-icon"><i class='bx bx-calculator'></i></div>
+                    <h3>Exercício 2: Calculadora</h3>
+                    <p>Faça uma calculadora simples com operações básicas</p>
+                    <button class="btn" onclick="abrirAtividade(2)">Fazer Exercício</button>
+                </div>
+                <div class="atividade-card">
+                    <div class="atividade-icon"><i class='bx bx-list-ul'></i></div>
+                    <h3>Exercício 3: Lista de Compras</h3>
+                    <p>Crie um programa para gerenciar uma lista de compras</p>
+                    <button class="btn" onclick="abrirAtividade(3)">Fazer Exercício</button>
+                </div>
+                <div class="atividade-card">
+                    <div class="atividade-icon"><i class='bx bx-game'></i></div>
+                    <h3>Exercício 4: Jogo da Adivinhação</h3>
+                    <p>Desenvolva um jogo onde o computador pensa em um número</p>
+                    <button class="btn" onclick="abrirAtividade(4)">Fazer Exercício</button>
+                </div>
+                <div class="atividade-card">
+                    <div class="atividade-icon"><i class='bx bx-data'></i></div>
+                    <h3>Exercício 5: Análise de Dados</h3>
+                    <p>Analise uma lista de números e calcule estatísticas</p>
+                    <button class="btn" onclick="abrirAtividade(5)">Fazer Exercício</button>
+                </div>
+                <div class="atividade-card">
+                    <div class="atividade-icon"><i class='bx bx-file'></i></div>
+                    <h3>Projeto Final</h3>
+                    <p>Crie um projeto completo aplicando tudo que aprendeu</p>
+                    <button class="btn" onclick="abrirAtividade(6)">Fazer Projeto</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    
+    <div id="modalAtividade" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="fecharModal()">&times;</span>
+            <h2 id="tituloAtividade">Exercício</h2>
+            <p id="descricaoAtividade">Descrição do exercício...</p>
+
+            <form class="atividade-form" onsubmit="enviarAtividade(event)">
+                <textarea id="codigo" placeholder="Cole seu código Python aqui..." rows="10" required></textarea>
+                <button type="submit" class="btn">Enviar e Avaliar</button>
+            </form>
+            <div id="resultado" style="display:none; margin-top:20px; padding:15px; border-radius:8px; text-align:center;">
+                <h3>Avaliação</h3>
+                <p id="notaResultado" style="font-size:1.5rem; font-weight:bold; margin:10px 0;"></p>
+                <p id="feedback" style="color:#666;"></p>
+            </div>
+        </div>
+    </div>
+
+    
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Turma da Touca. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <script>
+        const API_URL = "";
+        
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const usuarioId = localStorage.getItem('usuarioId');
+            const username = localStorage.getItem('username');
+            const navLogin = document.getElementById('nav-login');
+            const navLogout = document.getElementById('nav-logout');
+
+            if (usuarioId && username) {
+
+                console.log(`Bem-vindo, ${username}!`);
+                navLogin.style.display = 'none';
+                navLogout.style.display = 'block';
+            } else {
+
+                navLogin.style.display = 'block';
+                navLogout.style.display = 'none';
+            }
+        });
+
+        function fazerLogout(event) {
+            event.preventDefault();
+            
+
+            localStorage.removeItem('usuarioId');
+            localStorage.removeItem('username');
+            
+
+            window.location.href = 'login.html';
+        }
+        
+        let atividadeAtual = null;
+
+        const atividades = {
+            1: {
+                titulo: "Exercício 1: Hello World",
+                descricao: "Crie um programa em Python que imprime 'Olá, mundo!' na tela."
+            },
+            2: {
+                titulo: "Exercício 2: Calculadora",
+                descricao: "Faça uma calculadora que realize as operações básicas: soma, subtração, multiplicação e divisão."
+            },
+            3: {
+                titulo: "Exercício 3: Lista de Compras",
+                descricao: "Crie um programa que permita adicionar, remover e listar itens de uma lista de compras."
+            },
+            4: {
+                titulo: "Exercício 4: Jogo da Adivinhação",
+                descricao: "Desenvolva um jogo onde o computador pensa em um número entre 1 e 100 e o jogador tenta adivinhar."
+            },
+            5: {
+                titulo: "Exercício 5: Análise de Dados",
+                descricao: "Analise uma lista de números e calcule: média, mediana, maior e menor valor."
+            },
+            6: {
+                titulo: "Projeto Final",
+                descricao: "Crie um projeto completo aplicando todos os conceitos aprendidos no curso."
+            }
+        };
+
+        async function verificarConclusaoAtividade(id) {
+            const usuarioId = localStorage.getItem('usuarioId');
+            if (!usuarioId) return false;
+
+            try {
+                const response = await fetch(`${API_URL}/atividades/${usuarioId}/${id}/status`);
+                const dados = await response.json();
+
+                if (response.ok && dados.concluido) {
+                    alert('Você já concluiu essa atividade com nota máxima. Não é possível reabrir.');
+                    return true;
+                }
+            } catch (erro) {
+                console.warn('Não foi possível verificar status da atividade:', erro);
+            }
+
+            return false;
+        }
+
+        async function abrirAtividade(id) {
+            const usuarioId = localStorage.getItem('usuarioId');
+            if (!usuarioId) {
+                alert('Você precisa fazer login para enviar atividades!');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const concluido = await verificarConclusaoAtividade(id);
+            if (concluido) return;
+
+            atividadeAtual = id;
+            const atividade = atividades[id];
+
+            document.getElementById('tituloAtividade').textContent = atividade.titulo;
+            document.getElementById('descricaoAtividade').textContent = atividade.descricao;
+            document.getElementById('modalAtividade').style.display = 'block';
+        }
+
+        function fecharModal() {
+            document.getElementById('modalAtividade').style.display = 'none';
+            atividadeAtual = null;
+        }
+
+        async function enviarAtividade(event) {
+            event.preventDefault();
+
+            const usuarioId = localStorage.getItem('usuarioId');
+            const codigo = document.getElementById('codigo').value;
+
+            if (!codigo.trim()) {
+                alert('❌ Por favor, escreva o código!');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/atividades`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        usuarioId, 
+                        atividadeId: atividadeAtual, 
+                        codigo 
+                    })
+                });
+
+                const dados = await response.json();
+
+                if (response.ok) {
+
+                    const resultadoDiv = document.getElementById('resultado');
+                    const notaResultado = document.getElementById('notaResultado');
+                    const feedback = document.getElementById('feedback');
+                    
+
+                    let cor = '#4CAF50';
+                    let msg = '🎉 Excelente trabalho!';
+                    
+                    if (dados.nota >= 10) {
+                        cor = '#4CAF50';
+                        msg = '🎉 Perfeito! Nota máxima!';
+                    } else if (dados.nota >= 8) {
+                        cor = '#8BC34A';
+                        msg = '👏 Muito bom! Continue assim!';
+                    } else if (dados.nota >= 6) {
+                        cor = '#FFC107';
+                        msg = '📚 Bom trabalho! Há pontos a melhorar.';
+                    } else if (dados.nota >= 5) {
+                        cor = '#FF9800';
+                        msg = '💪 Tentativa aceitável, mas revise os conceitos.';
+                    } else {
+                        cor = '#F44336';
+                        msg = '❌ Precisa melhorar. Revise a matéria!';
+                    }
+                    
+                    resultadoDiv.style.backgroundColor = cor + '20';
+                    resultadoDiv.style.borderLeft = `4px solid ${cor}`;
+                    notaResultado.textContent = `${dados.nota}/10`;
+                    notaResultado.style.color = cor;
+                    feedback.textContent = msg;
+                    resultadoDiv.style.display = 'block';
+                    
+
+                    setTimeout(() => {
+                        document.getElementById('codigo').value = '';
+
+                    }, 500);
+                } else {
+                    alert(`❌ Erro: ${dados.msg}`);
+                }
+            } catch (erro) {
+                alert('❌ Erro ao conectar ao servidor!');
+                console.error(erro);
+            }
+        }
+
+
+        window.onclick = function (event) {
+            const modal = document.getElementById('modalAtividade');
+            if (event.target == modal) {
+                fecharModal();
+            }
+        }
+    </script>
+</body>
+
+</html>
