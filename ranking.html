@@ -323,7 +323,7 @@
                     
                 </ul>
             </div>
-            <button class="refresh-btn" onclick="carregarRanking()">Atualizar Ranking</button>
+            <button class="refresh-btn" id="refreshBtn" onclick="carregarRanking()">🔄 Atualizar Ranking</button>
         </div>
     </section>
 
@@ -335,8 +335,7 @@
     </footer>
 
     <script>
-        const API_URL = "";
-
+        const API_URL = window.location.origin;
 
         function verificarSessao() {
             const usuarioId = localStorage.getItem('usuarioId');
@@ -369,6 +368,15 @@
 
         async function carregarRanking() {
             try {
+                const rankingList = document.getElementById('rankingList');
+                const refreshBtn = document.getElementById('refreshBtn');
+                
+                rankingList.innerHTML = '<li class="no-data">⏳ Carregando ranking...</li>';
+                refreshBtn.disabled = true;
+                refreshBtn.style.opacity = '0.6';
+                refreshBtn.style.cursor = 'not-allowed';
+
+                console.log(`Conectando em: ${API_URL}/ranks`);
                 const response = await fetch(`${API_URL}/ranks`);
                 const dados = await response.json();
 
@@ -376,13 +384,18 @@
                     exibirRanking(dados);
                 } else {
                     console.error('Erro ao carregar ranking:', dados);
-                    document.getElementById('rankingList').innerHTML =
-                        '<li class="no-data">Erro ao carregar ranking. Tente novamente.</li>';
+                    rankingList.innerHTML =
+                        '<li class="no-data">❌ Erro ao carregar ranking. Tente novamente.</li>';
                 }
             } catch (erro) {
                 console.error('Erro de conexão:', erro);
                 document.getElementById('rankingList').innerHTML =
-                    '<li class="no-data">Erro de conexão. Verifique se o servidor está rodando.</li>';
+                    '<li class="no-data">❌ Erro de conexão. Verifique se o servidor está rodando.</li>';
+            } finally {
+                const refreshBtn = document.getElementById('refreshBtn');
+                refreshBtn.disabled = false;
+                refreshBtn.style.opacity = '1';
+                refreshBtn.style.cursor = 'pointer';
             }
         }
 
