@@ -349,6 +349,30 @@ app.get("/usuarios", async (req, res) => {
   }
 });
 
+// Rota para zerar o ranking (admin only)
+app.delete("/admin/zerar-ranking", async (req, res) => {
+  try {
+    const { senha } = req.body;
+    
+    // Verificar senha de admin
+    const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "admin123";
+    if (senha !== ADMIN_PASSWORD) {
+      return res.status(403).json({ msg: "Senha de admin incorreta" });
+    }
+    
+    // Limpar todas as atividades
+    const resultado = await atividades.deleteMany({});
+    
+    console.log(`🗑️ Ranking zerado! ${resultado.deletedCount} registros removidos`);
+    res.json({ 
+      msg: "Ranking zerado com sucesso!",
+      registrosRemovidos: resultado.deletedCount
+    });
+  } catch (erro) {
+    tratarErro(res, erro);
+  }
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`🚀 Servidor rodando na porta ${PORT}`));
 
