@@ -402,21 +402,7 @@
         };
 
         async function verificarConclusaoAtividade(id) {
-            const usuarioId = localStorage.getItem('usuarioId');
-            if (!usuarioId) return false;
-
-            try {
-                const response = await fetch(`${API_URL}/atividades/${usuarioId}/${id}/status`);
-                const dados = await response.json();
-
-                if (response.ok && dados.concluido) {
-                    alert('Você já concluiu essa atividade com nota máxima. Não é possível reabrir.');
-                    return true;
-                }
-            } catch (erro) {
-                console.warn('Não foi possível verificar status da atividade:', erro);
-            }
-
+            // Função desabilitada - permite resubmissão ilimitada
             return false;
         }
 
@@ -427,9 +413,6 @@
                 window.location.href = 'login.html';
                 return;
             }
-
-            const concluido = await verificarConclusaoAtividade(id);
-            if (concluido) return;
 
             atividadeAtual = id;
             const atividade = atividades[id];

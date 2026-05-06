@@ -592,7 +592,7 @@
 
             if (API_URL) {
                 try {
-                    await fetch(`${API_URL}/atividades`, {
+                    const response = await fetch(`${API_URL}/atividades`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ 
@@ -602,6 +602,11 @@
                             nota: nota 
                         })
                     });
+                    if (response.ok) {
+                        console.log('✅ Atividade salva com sucesso!', await response.json());
+                    } else {
+                        console.error('❌ Erro ao salvar:', response.status);
+                    }
                 } catch (erro) {
                     console.error('Erro ao salvar no servidor:', erro);
                 }

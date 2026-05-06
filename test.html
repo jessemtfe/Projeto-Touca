@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Teste Servidor</title>
+    <style>
+        body { font-family: Arial; padding: 20px; }
+        button { padding: 10px 20px; margin: 10px 0; cursor: pointer; }
+        div { margin: 10px 0; padding: 10px; border: 1px solid #ccc; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Teste de Conexão do Servidor</h1>
+    
+    <button onclick="testarServidor()">1️⃣ Testar Servidor (/test)</button>
+    <button onclick="testarLogin()">2️⃣ Testar Login</button>
+    <button onclick="testarAtividadePost()">3️⃣ Testar Salvar Atividade</button>
+    <button onclick="testarRanking()">4️⃣ Testar Ranking</button>
+    <button onclick="limparConsole()">Limpar Console</button>
+
+    <div id="resultado"></div>
+    <div id="console" style="background: #f0f0f0; padding: 10px; max-height: 300px; overflow-y: auto; white-space: pre-wrap; font-family: monospace; font-size: 12px;"></div>
+
+    <script>
+        const API_URL = window.location.origin;
+        let consoleDiv = document.getElementById('console');
+
+        function log(msg) {
+            console.log(msg);
+            consoleDiv.innerHTML += msg + '\n';
+            consoleDiv.scrollTop = consoleDiv.scrollHeight;
+        }
+
+        function limparConsole() {
+            consoleDiv.innerHTML = '';
+        }
+
+        async function testarServidor() {
+            log(`\n🔍 Testando servidor em: ${API_URL}`);
+            try {
+                const response = await fetch(`${API_URL}/test`);
+                const data = await response.json();
+                log(`✅ Resposta: ${JSON.stringify(data, null, 2)}`);
+            } catch (erro) {
+                log(`❌ Erro: ${erro.message}`);
+            }
+        }
+
+        async function testarLogin() {
+            log(`\n🔍 Testando login...`);
+            try {
+                const response = await fetch(`${API_URL}/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        email: 'jesse@test.com', 
+                        senha: 'senha123' 
+                    })
+                });
+                const data = await response.json();
+                log(`📍 Status: ${response.status}`);
+                log(`📝 Resposta: ${JSON.stringify(data, null, 2)}`);
+                if (data.usuarioId) {
+                    localStorage.setItem('usuarioId', data.usuarioId);
+                    log(`✅ usuarioId salvo no localStorage: ${data.usuarioId}`);
+                }
+            } catch (erro) {
+                log(`❌ Erro: ${erro.message}`);
+            }
+        }
+
+        async function testarAtividadePost() {
+            log(`\n🔍 Testando POST /atividades...`);
+            const usuarioId = localStorage.getItem('usuarioId');
+            
+            if (!usuarioId) {
+                log(`⚠️  Faça login primeiro!`);
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/atividades`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        usuarioId: usuarioId,
+                        atividadeId: 1, 
+                        resposta: 'A',
+                        nota: 10 
+                    })
+                });
+                const data = await response.json();
+                log(`📍 Status: ${response.status}`);
+                log(`📝 Resposta: ${JSON.stringify(data, null, 2)}`);
+                if (response.ok) {
+                    log(`✅ Atividade salva com sucesso!`);
+                }
+            } catch (erro) {
+                log(`❌ Erro: ${erro.message}`);
+            }
+        }
+
+        async function testarRanking() {
+            log(`\n🔍 Testando /ranking-detalhado...`);
+            try {
+                const response = await fetch(`${API_URL}/ranking-detalhado`);
+                const data = await response.json();
+                log(`📍 Status: ${response.status}`);
+                if (Array.isArray(data)) {
+                    log(`✅ ${data.length} usuários no ranking:`);
+                    data.forEach(u => {
+                        log(`  - ${u.username}: ${u.pontuacaoTotal} pts (${u.totalAtividades} atividades)`);
+                    });
+                } else {
+                    log(`📝 Resposta: ${JSON.stringify(data, null, 2)}`);
+                }
+            } catch (erro) {
+                log(`❌ Erro: ${erro.message}`);
+            }
+        }
+
+        // Auto-test ao carregar
+        log(`🚀 Página carregada em: ${API_URL}`);
+        log(`📱 Abra F12 para ver mais detalhes`);
+    </script>
+</body>
+</html>

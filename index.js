@@ -17,6 +17,15 @@ app.get("/", (req, res) => {
   res.sendFile(__dirname + "/login.html");
 });
 
+// ⚡ Rota de teste - Verificar se servidor está funcionando
+app.get("/test", (req, res) => {
+  res.json({ 
+    status: "✅ Servidor rodando",
+    banco: db ? "✅ Conectado ao MongoDB" : "❌ Não conectado ao MongoDB",
+    url: process.env.MONGO_URI ? "✅ MONGO_URI configurado" : "❌ MONGO_URI não encontrado"
+  });
+});
+
 const client = new MongoClient(process.env.MONGO_URI);
 let db, usuarios, atividades;
 
@@ -85,19 +94,32 @@ app.post("/atividades", async (req, res) => {
   try {
     const { usuarioId, atividadeId, codigo, resposta, nota: notaFornecida } = req.body;
     
-    console.log("📨 Recebido POST /atividades:", { usuarioId, atividadeId, tipo: codigo ? "código" : resposta ? "resposta" : "outro" });
+    console.log("📨 Recebido POST /atividades:", { usuarioId, atividadeId, tipo: codigo ? "código" : resposta ? "resposta" : "outro", nota: notaFornecida });
     
     if (!usuarioId) return res.status(400).json({ msg: "usuarioId é obrigatório" });
     if (!atividadeId) return res.status(400).json({ msg: "atividadeId é obrigatório" });
     if (!codigo && !resposta) return res.status(400).json({ msg: "código ou resposta é obrigatório" });
 
-    const userIdObj = new ObjectId(usuarioId);
-
-    // Não permitir nova submissão se já tiver aprovado com nota máxima (10)
-    const aprovado = await atividades.findOne({ usuarioId: userIdObj, atividadeId: parseInt(atividadeId), nota: { $gte: 10 } });
-    if (aprovado) {
-      return res.status(403).json({ msg: "Atividade já concluída com sucesso. Não é possível enviar novamente." });
+    let userIdObj;
+    try {
+      userIdObj = new ObjectId(usuarioId);
+    } catch (erro) {
+      console.error("❌ usuarioId inválido:", usuarioId);
+      return res.status(400).json({ msg: "usuarioId inválido" });
     }
+
+    // Verificar se o usuário existe
+    const usuarioExiste = await usuarios.findOne({ _id: userIdObj });
+    if (!usuarioExiste) {
+      console.error("❌ Usuário não encontrado:", usuarioId);
+      return res.status(404).json({ msg: "Usuário não encontrado" });
+    }
+
+    // Buscar melhor submissão anterior (se houver)
+    const submissaoAnterior = await atividades.findOne(
+      { usuarioId: userIdObj, atividadeId: parseInt(atividadeId) },
+      { sort: { nota: -1 } }
+    );
     
     // Determinar a nota: se fornecida (aulas 2, 3), usar; senão avaliar código
     let nota = notaFornecida;
@@ -107,18 +129,34 @@ app.post("/atividades", async (req, res) => {
     } else {
       console.log("✅ Nota fornecida pelo frontend:", nota);
     }
+
+    // Permitir reenvio mesmo se já houver nota anterior.
+    // A lógica abaixo segue mantendo a melhor nota por atividade.
+    if (submissaoAnterior && submissaoAnterior.nota > nota) {
+      nota = submissaoAnterior.nota;
+      console.log(`⚠️ Mantendo melhor nota anterior: ${nota}`);
+    }
     
     const conteudo = codigo || resposta;
     const atividade = `Exercício ${atividadeId}`;
     
-    const resultado = await atividades.insertOne({ 
-      usuarioId: userIdObj, 
-      atividadeId: parseInt(atividadeId),
-      atividade,
-      conteudo,
-      nota, 
-      data: new Date() 
-    });
+    // Só salvar se for primeira submissão ou nota melhor
+    let resultado;
+    if (!submissaoAnterior || nota > submissaoAnterior.nota) {
+      resultado = await atividades.insertOne({ 
+        usuarioId: userIdObj, 
+        atividadeId: parseInt(atividadeId),
+        atividade,
+        conteudo,
+        nota, 
+        data: new Date() 
+      });
+      console.log(`✅ Atividade ${atividadeId} salva para usuário ${usuarioId} com nota ${nota} - ID: ${resultado.insertedId}`);
+    } else {
+      // Se nota igual ou pior, só registrar log
+      console.log(`📌 Submissão rejeitada (nota ${nota} < melhor anterior ${submissaoAnterior.nota})`);
+      resultado = { insertedId: submissaoAnterior._id };
+    }
     
     res.json({ msg: "Atividade salva!", id: resultado.insertedId, nota });
   } catch (erro) {
@@ -135,13 +173,17 @@ app.get("/atividades/:usuarioId/:atividadeId/status", async (req, res) => {
       return res.status(400).json({ msg: "usuarioId e atividadeId são obrigatórios" });
     }
 
-    const conclusao = await atividades.findOne({
-      usuarioId: new ObjectId(usuarioId),
-      atividadeId: parseInt(atividadeId),
-      nota: { $gte: 10 }
-    });
+    const melhorSubmissao = await atividades.findOne(
+      { usuarioId: new ObjectId(usuarioId), atividadeId: parseInt(atividadeId) },
+      { sort: { nota: -1 } }
+    );
 
-    res.json({ concluido: Boolean(conclusao), nota: conclusao ? conclusao.nota : null });
+    // Retorna a melhor nota, mas permite reabrir (concluido: false)
+    res.json({ 
+      concluido: false,
+      melhorNota: melhorSubmissao ? melhorSubmissao.nota : null,
+      temSubmissao: Boolean(melhorSubmissao)
+    });
   } catch (erro) {
     tratarErro(res, erro);
   }
@@ -335,6 +377,7 @@ app.get("/ranks", async (req, res) => {
 // Obter ranking com detalhes de notas por atividade
 app.get("/ranking-detalhado", async (req, res) => {
   try {
+    console.log("📊 Carregando ranking detalhado...");
     const ranking = await atividades.aggregate([
       // Pegar a maior nota por usuário + atividadeId
       {
@@ -392,12 +435,16 @@ app.get("/ranking-detalhado", async (req, res) => {
       { $limit: 10 }
     ]).toArray();
 
+    console.log(`✅ Ranking carregado com ${ranking.length} usuários:`, ranking.map(r => ({ username: r.username, pontos: r.pontuacaoTotal })));
+
     if (!ranking || ranking.length === 0) {
+      console.log("⚠️ Nenhum dado de atividades no banco ainda");
       return res.json([]);
     }
 
     res.json(ranking);
   } catch (erro) {
+    console.error("❌ Erro ao carregar ranking-detalhado:", erro);
     tratarErro(res, erro);
   }
 });

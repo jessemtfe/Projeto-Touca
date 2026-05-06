@@ -523,7 +523,7 @@
             document.getElementById('modalAtividade').style.display = 'none';
         }
 
-        function enviarAtividade(event) {
+        async function enviarAtividade(event) {
             event.preventDefault();
             const usuarioId = localStorage.getItem('usuarioId');
             const resposta = document.getElementById('codigo').value.trim().toUpperCase();
@@ -546,7 +546,7 @@
 
             if (usuarioId && API_URL) {
                 try {
-                    fetch(`${API_URL}/atividades`, {
+                    const response = await fetch(`${API_URL}/atividades`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ 
@@ -556,6 +556,11 @@
                             nota: nota 
                         })
                     });
+                    if (response.ok) {
+                        console.log('✅ Atividade salva com sucesso!', await response.json());
+                    } else {
+                        console.error('❌ Erro ao salvar:', response.status);
+                    }
                 } catch (erro) {
                     console.error('Erro ao salvar no servidor:', erro);
                 }

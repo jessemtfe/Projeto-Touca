@@ -471,9 +471,14 @@
             window.location.href = 'login.html';
         }
 
-    <script>
-        const API_URL = window.location.origin;
-        let atividadeAtual = null;
+        function abrirAtividade(id) {
+            const usuarioId = localStorage.getItem('usuarioId');
+            if (!usuarioId) {
+                alert('Faça login para responder!');
+                window.location.href = 'login.html';
+                return;
+            }
+            atividadeAtual = id;
             document.getElementById('tituloAtividade').textContent = atividades[id].titulo;
             document.getElementById('descricaoAtividade').textContent = atividades[id].descricao;
             document.getElementById('resultado').style.display = 'none';
@@ -485,7 +490,7 @@
             document.getElementById('modalAtividade').style.display = 'none';
         }
 
-        function enviarAtividade(event) {
+        async function enviarAtividade(event) {
             event.preventDefault();
             const usuarioId = localStorage.getItem('usuarioId');
             const resposta = document.getElementById('codigo').value.trim().toUpperCase();
@@ -508,7 +513,7 @@
 
             if (usuarioId && API_URL) {
                 try {
-                    fetch(`${API_URL}/atividades`, {
+                    const response = await fetch(`${API_URL}/atividades`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ 
@@ -518,6 +523,11 @@
                             nota: nota 
                         })
                     });
+                    if (response.ok) {
+                        console.log('✅ Atividade salva com sucesso!', await response.json());
+                    } else {
+                        console.error('❌ Erro ao salvar:', response.status);
+                    }
                 } catch (erro) {
                     console.error('Erro ao salvar no servidor:', erro);
                 }
