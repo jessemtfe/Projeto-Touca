@@ -80,16 +80,16 @@ app.post("/login", async (req, res) => {
   }
 });
 
-// Salvar nota de atividade COM AVALIAÇÃO AUTOMÁTICA
+// Salvar nota de atividade COM AVALIAÇÃO AUTOMÁTICA OU NOTA FORNECIDA
 app.post("/atividades", async (req, res) => {
   try {
-    const { usuarioId, atividadeId, codigo } = req.body;
+    const { usuarioId, atividadeId, codigo, resposta, nota: notaFornecida } = req.body;
     
-    console.log("📨 Recebido POST /atividades:", { usuarioId, atividadeId, codigo: codigo ? codigo.substring(0, 50) : "vazio" });
+    console.log("📨 Recebido POST /atividades:", { usuarioId, atividadeId, tipo: codigo ? "código" : resposta ? "resposta" : "outro" });
     
     if (!usuarioId) return res.status(400).json({ msg: "usuarioId é obrigatório" });
     if (!atividadeId) return res.status(400).json({ msg: "atividadeId é obrigatório" });
-    if (!codigo) return res.status(400).json({ msg: "codigo é obrigatório" });
+    if (!codigo && !resposta) return res.status(400).json({ msg: "código ou resposta é obrigatório" });
 
     const userIdObj = new ObjectId(usuarioId);
 
@@ -99,22 +99,28 @@ app.post("/atividades", async (req, res) => {
       return res.status(403).json({ msg: "Atividade já concluída com sucesso. Não é possível enviar novamente." });
     }
     
-    // Avaliar o código automaticamente
-    const nota = avaliarAtividade(atividadeId, codigo);
-    const atividade = `Exercício ${atividadeId}`;
+    // Determinar a nota: se fornecida (aulas 2, 3), usar; senão avaliar código
+    let nota = notaFornecida;
+    if (nota === undefined || nota === null) {
+      nota = avaliarAtividade(atividadeId, codigo);
+      console.log("✅ Avaliado automaticamente com nota:", nota);
+    } else {
+      console.log("✅ Nota fornecida pelo frontend:", nota);
+    }
     
-    console.log("✅ Avaliado com nota:", nota);
+    const conteudo = codigo || resposta;
+    const atividade = `Exercício ${atividadeId}`;
     
     const resultado = await atividades.insertOne({ 
       usuarioId: userIdObj, 
       atividadeId: parseInt(atividadeId),
       atividade,
-      codigo,
+      conteudo,
       nota, 
       data: new Date() 
     });
     
-    res.json({ msg: "Atividade avaliada!", id: resultado.insertedId, nota });
+    res.json({ msg: "Atividade salva!", id: resultado.insertedId, nota });
   } catch (erro) {
     console.error("❌ Erro em /atividades:", erro);
     tratarErro(res, erro);
