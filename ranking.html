@@ -238,6 +238,66 @@
             color: #666;
         }
 
+        .user-details {
+            display: none;
+            padding: 1rem;
+            background: #f5f5f5;
+            border-radius: 8px;
+            margin-top: 1rem;
+            font-size: 0.85rem;
+        }
+
+        .user-details.show {
+            display: block;
+        }
+
+        .activities-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .activity-badge {
+            background: #667eea;
+            color: white;
+            padding: 0.5rem;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+
+        .activity-badge.high {
+            background: #4CAF50;
+        }
+
+        .activity-badge.medium {
+            background: #FFC107;
+        }
+
+        .activity-badge.low {
+            background: #FF9800;
+        }
+
+        .expand-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 0 0.5rem;
+            color: #667eea;
+        }
+
+        .expand-btn:hover {
+            color: #4FC3F7;
+        }
+
+        .ranking-item.expanded {
+            flex-wrap: wrap;
+            align-items: stretch;
+        }
+
         .refresh-btn {
             display: inline-block;
             margin: 2rem auto;
@@ -376,8 +436,8 @@
                 refreshBtn.style.opacity = '0.6';
                 refreshBtn.style.cursor = 'not-allowed';
 
-                console.log(`Conectando em: ${API_URL}/ranks`);
-                const response = await fetch(`${API_URL}/ranks`);
+                console.log(`Conectando em: ${API_URL}/ranking-detalhado`);
+                const response = await fetch(`${API_URL}/ranking-detalhado`);
                 const dados = await response.json();
 
                 if (response.ok) {
@@ -426,20 +486,52 @@
                 const inicial = usuario.username ? usuario.username.charAt(0).toUpperCase() : '?';
                 const pontuacao = usuario.pontuacaoTotal || 0;
                 const atividades = usuario.totalAtividades || 0;
+                const media = usuario.media ? usuario.media.toFixed(1) : '0.0';
+
+                // Criar grid de notas das atividades
+                let atividadesHTML = '';
+                if (usuario.atividades && usuario.atividades.length > 0) {
+                    usuario.atividades.sort((a, b) => a.atividadeId - b.atividadeId);
+                    atividadesHTML = usuario.atividades.map(ativ => {
+                        let badgeClass = '';
+                        if (ativ.nota >= 10) {
+                            badgeClass = 'high';
+                        } else if (ativ.nota >= 7) {
+                            badgeClass = 'medium';
+                        } else {
+                            badgeClass = 'low';
+                        }
+                        return `<div class="activity-badge ${badgeClass}">A${ativ.atividadeId}: ${ativ.nota}</div>`;
+                    }).join('');
+                }
 
                 return `
-                    <li class="ranking-item">
+                    <li class="ranking-item" onclick="toggleDetails(this)">
                         <div class="position ${posicaoClass}">#${posicao}</div>
                         <div class="user-avatar">${inicial}</div>
                         <div class="user-info">
                             <div class="user-name">${usuario.username || 'Usuário'}</div>
-                            <div class="user-stats">${atividades} atividades completadas</div>
+                            <div class="user-stats">${atividades} atividades | Média: ${media}</div>
                         </div>
                         <div class="score">${pontuacao} pts</div>
                         ${posicao <= 3 ? `<div class="medal ${medalClass}">🏆</div>` : ''}
+                        <div class="user-details">
+                            <div style="font-weight: 600; margin-bottom: 0.5rem;">Notas por Atividade:</div>
+                            <div class="activities-grid">
+                                ${atividadesHTML}
+                            </div>
+                        </div>
                     </li>
                 `;
             }).join('');
+        }
+
+        function toggleDetails(element) {
+            const details = element.querySelector('.user-details');
+            if (details) {
+                details.classList.toggle('show');
+                element.classList.toggle('expanded');
+            }
         }
 
 

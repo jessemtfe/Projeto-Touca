@@ -326,6 +326,76 @@ app.get("/ranks", async (req, res) => {
   }
 });
 
+// Obter ranking com detalhes de notas por atividade
+app.get("/ranking-detalhado", async (req, res) => {
+  try {
+    const ranking = await atividades.aggregate([
+      // Pegar a maior nota por usuário + atividadeId
+      {
+        $sort: { nota: -1 }
+      },
+      {
+        $group: {
+          _id: { usuarioId: '$usuarioId', atividadeId: '$atividadeId' },
+          melhorNota: { $first: '$nota' }
+        }
+      },
+      // Agrupar por usuário mantendo as notas de cada atividade
+      {
+        $group: {
+          _id: '$_id.usuarioId',
+          atividades: { $push: { atividadeId: '$_id.atividadeId', nota: '$melhorNota' } },
+          pontuacaoTotal: { $sum: '$melhorNota' },
+          totalAtividades: { $sum: 1 }
+        }
+      },
+      // Join com tabela de usuários
+      {
+        $lookup: {
+          from: 'usuarios',
+          localField: '_id',
+          foreignField: '_id',
+          as: 'usuario'
+        }
+      },
+      {
+        $unwind: {
+          path: '$usuario',
+          preserveNullAndEmptyArrays: true
+        }
+      },
+      {
+        $addFields: {
+          username: { $ifNull: ['$usuario.username', 'Usuário'] },
+          media: { $cond: [{ $eq: ['$totalAtividades', 0] }, 0, { $divide: ['$pontuacaoTotal', '$totalAtividades'] }] }
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          usuarioId: { $toString: '$_id' },
+          username: 1,
+          totalAtividades: 1,
+          pontuacaoTotal: 1,
+          media: 1,
+          atividades: 1
+        }
+      },
+      // Ordenar por pontuação total (maior primeiro)
+      { $sort: { pontuacaoTotal: -1 } },
+      { $limit: 10 }
+    ]).toArray();
+
+    if (!ranking || ranking.length === 0) {
+      return res.json([]);
+    }
+
+    res.json(ranking);
+  } catch (erro) {
+    tratarErro(res, erro);
+  }
+});
+
 // Obter dados do usuário
 app.get("/usuarios/:id", async (req, res) => {
   try {
