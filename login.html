@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="Description" content="Uma Pagina de Login">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        header {
+            background: #fffffff2;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        header nav.container {
+            max-width: none;
+            width: 100%;
+            margin: 0;
+            padding: 1rem 20px;
+        }
+
+        nav {
+            display: flex;
+                        justify-content: flex-start;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .logo img:first-child {
+            width: 150px;
+            height: auto;
+        }
+
+        .logo img:last-child {
+            width: 80px;
+            height: auto;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+            margin-right: auto;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 1rem;
+            margin-left: auto;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 600;
+            padding: 0.4rem 0.8rem;
+            border-radius: 8px;
+        }
+
+        .nav-links a:hover {
+            background: rgba(102, 126, 234, 0.2);
+            color: #4FC3F7;
+        }
+
+        body {
+            display: block !important;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            background: url('./img/Turma da Touca.jpeg') no-repeat center/cover;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        .login-card p {
+            text-align: center;
+            font-size: 0.95rem;
+            color: #444;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #E53935;
+            text-align: center;
+            padding: 90px 20px 50px;
+            background: url('./img/hero-bg.jpg') no-repeat center/cover fixed;
+        }
+
+        .hero span {
+            color: #4FC3F7;
+        }
+
+        .hero h1 {
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .hero p {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin: 0 auto;
+            max-width: 500px;
+        }
+
+        .hero-content {
+            max-width: 860px;
+            margin: 0 auto;
+        }
+
+        .login-main {
+            min-height: calc(100vh - 240px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px 0 40px;
+            width: 100%;
+            margin-top: 30px;
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 420px;
+        }
+    </style>
+    <title>Login Turma da Touca</title>
+</head>
+
+<body>
+    <header>
+        <nav class="container">
+            <a class="logo" href="home.html">
+                <img src="./img/Copilot_20260322_143438.png" alt="Cruzeiro do Sul">
+                <img src="./img/Logo da Touca.png" alt="Turma da Touca">
+            </a>
+            <ul class="nav-links">
+                <li><a href="home.html">Início</a></li>
+                <li><a href="aula1.html">Aulas</a></li>
+                <li><a href="ranking.html">Ranking</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Entrar na <span>Turma da Touca</span></h1>
+            <p style="color: #000000;">Conecte-se ao aprendizado de Python e progrida com as aulas passo a passo.</p>
+        </div>
+    </section>
+
+    <main class="login-main">
+        <form>
+            <div class="login-card">
+                <div id="login">
+                    <h1>Login</h1>
+                    <div class="input-box">
+                        <input placeholder="Usuário" type="email">
+                        <i class="bx bxs-user"></i>
+                    </div>
+                    <div class="input-box">
+                        <input placeholder="Senha" type="password">
+                        <i class="bx bxs-lock-alt"></i>
+                    </div>
+                    <button type="submit" class="login">Login</button>
+                    
+
+
+                    
+                    <p>
+                        Não tem uma conta?
+                        <button type="button" class="btn-secundario" onclick="mostrarCadastro()">Criar Cadastro</button>
+                    </p>
+                </div>
+
+                <div id="cadastro" style="display: none;">
+                    <h1>Cadastro</h1>
+                    <div class="input-box">
+                        <input type="text" placeholder="Nome">
+                        <i class="bx bxs-user"></i>
+                    </div>
+                    <div class="input-box">
+                        <input type="email" placeholder="E-mail">
+                        <i class="bx bxs-user"></i>
+                    </div>
+                    <div class="input-box">
+                        <input type="password" placeholder="Senha">
+                        <i class="bx bxs-lock-alt"></i>
+                    </div>
+                    <button type="submit" class="cadastro-btn">Cadastrar</button>
+                    
+
+
+                    
+                    <p>
+                        Já tem conta?
+                        <button type="button" class="btn-voltar" onclick="mostrarLogin()">Voltar para Login</button>
+                    </p>
+                </div>
+                
+            </div>
+            
+            
+            <script>
+                function mostrarCadastro() {
+                    document.getElementById("login").style.display = "none";
+                    document.getElementById("cadastro").style.display = "block";
+                }
+                function mostrarLogin() {
+                    document.getElementById("login").style.display = "block";
+                    document.getElementById("cadastro").style.display = "none";
+                }
+            </script>
+            
+
+
+        </form>
+
+    </main>
+
+    <script>
+        const API_URL = "";
+
+
+        const loginInputs = document.querySelectorAll("#login input");
+        const cadastroInputs = document.querySelectorAll("#cadastro input");
+        const loginBtn = document.querySelector(".login");
+        const cadastroBtn = document.querySelector(".cadastro-btn");
+
+        loginBtn.addEventListener("click", async (e) => {
+            e.preventDefault();
+            await fazerLogin();
+        });
+
+        cadastroBtn.addEventListener("click", async (e) => {
+            e.preventDefault();
+            await fazerCadastro();
+        });
+
+        async function fazerLogin() {
+            const email = loginInputs[0].value;
+            const senha = loginInputs[1].value;
+
+            if (!email || !senha) {
+                alert("❌ Preencha todos os campos!");
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/login`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email, senha }),
+                });
+
+                const dados = await response.json();
+
+                if (response.ok) {
+                    alert("✅ Login bem-sucedido!");
+                    localStorage.setItem("usuarioId", dados.usuarioId);
+                    localStorage.setItem("username", dados.username);
+
+                    window.location.href = "home.html";
+                } else {
+                    alert(`❌ ${dados.msg}`);
+                }
+            } catch (erro) {
+                alert("❌ Erro ao conectar ao servidor!");
+                console.error(erro);
+            }
+        }
+        async function fazerCadastro() {
+            const username = cadastroInputs[0].value;
+            const email = cadastroInputs[1].value;
+            const senha = cadastroInputs[2].value;
+
+            if (!username || !email || !senha) {
+                alert("❌ Preencha todos os campos!");
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/register`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ username, email, senha }),
+                });
+
+                const dados = await response.json();
+
+                if (response.ok) {
+                    alert("✅ Cadastro realizado! Faça login agora.");
+                    document.getElementById("cadastro").style.display = "none";
+                    document.getElementById("login").style.display = "block";
+
+                    cadastroInputs[0].value = "";
+                    cadastroInputs[1].value = "";
+                    cadastroInputs[2].value = "";
+                } else {
+                    alert(`❌ ${dados.msg}`);
+                }
+            } catch (erro) {
+                alert("❌ Erro ao conectar ao servidor!");
+                console.error(erro);
+            }
+        }
+    </script>
+
+    <script>
+
+        window.addEventListener('DOMContentLoaded', () => {
+            if (localStorage.getItem("usuarioId")) {
+
+                window.location.href = "home.html";
+            }
+        });
+    </script>
+</body>
+
+</html>
