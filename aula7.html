@@ -439,6 +439,7 @@
     </div>
 
     <script>
+        const API_URL = window.location.origin;
         let atividadeAtual = null;
 
         const atividades = {
@@ -470,14 +471,9 @@
             window.location.href = 'login.html';
         }
 
-        function abrirAtividade(id) {
-            const usuarioId = localStorage.getItem('usuarioId');
-            if (!usuarioId) {
-                alert('Faça login para responder!');
-                window.location.href = 'login.html';
-                return;
-            }
-            atividadeAtual = id;
+    <script>
+        const API_URL = window.location.origin;
+        let atividadeAtual = null;
             document.getElementById('tituloAtividade').textContent = atividades[id].titulo;
             document.getElementById('descricaoAtividade').textContent = atividades[id].descricao;
             document.getElementById('resultado').style.display = 'none';
@@ -491,6 +487,7 @@
 
         function enviarAtividade(event) {
             event.preventDefault();
+            const usuarioId = localStorage.getItem('usuarioId');
             const resposta = document.getElementById('codigo').value.trim().toUpperCase();
             const gabarito = atividades[atividadeAtual].gabarito;
             
@@ -508,6 +505,23 @@
             notaResultado.style.color = cor;
             feedback.textContent = msg;
             resultadoDiv.style.display = 'block';
+
+            if (usuarioId && API_URL) {
+                try {
+                    fetch(`${API_URL}/atividades`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ 
+                            usuarioId, 
+                            atividadeId: atividadeAtual, 
+                            resposta: resposta,
+                            nota: nota 
+                        })
+                    });
+                } catch (erro) {
+                    console.error('Erro ao salvar no servidor:', erro);
+                }
+            }
         }
 
         window.onclick = function (event) {
