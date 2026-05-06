@@ -92,9 +92,9 @@ app.post("/login", async (req, res) => {
 // Salvar nota de atividade COM AVALIAÇÃO AUTOMÁTICA OU NOTA FORNECIDA
 app.post("/atividades", async (req, res) => {
   try {
-    const { usuarioId, atividadeId, codigo, resposta, nota: notaFornecida } = req.body;
+    const { usuarioId, atividadeId, aulaId = 'default', codigo, resposta, nota: notaFornecida } = req.body;
     
-    console.log("📨 Recebido POST /atividades:", { usuarioId, atividadeId, tipo: codigo ? "código" : resposta ? "resposta" : "outro", nota: notaFornecida });
+    console.log("📨 Recebido POST /atividades:", { usuarioId, aulaId, atividadeId, tipo: codigo ? "código" : resposta ? "resposta" : "outro", nota: notaFornecida });
     
     if (!usuarioId) return res.status(400).json({ msg: "usuarioId é obrigatório" });
     if (!atividadeId) return res.status(400).json({ msg: "atividadeId é obrigatório" });
@@ -115,9 +115,12 @@ app.post("/atividades", async (req, res) => {
       return res.status(404).json({ msg: "Usuário não encontrado" });
     }
 
+    const atividadeIdInt = parseInt(atividadeId);
+    const aulaIdValue = aulaId === undefined || aulaId === null ? 'default' : aulaId;
+
     // Buscar melhor submissão anterior (se houver)
     const submissaoAnterior = await atividades.findOne(
-      { usuarioId: userIdObj, atividadeId: parseInt(atividadeId) },
+      { usuarioId: userIdObj, atividadeId: atividadeIdInt, aulaId: aulaIdValue },
       { sort: { nota: -1 } }
     );
     
@@ -138,27 +141,30 @@ app.post("/atividades", async (req, res) => {
     }
     
     const conteudo = codigo || resposta;
-    const atividade = `Exercício ${atividadeId}`;
+    const atividade = aulaIdValue === 'atividades'
+      ? `Atividade Geral ${atividadeIdInt}`
+      : `Aula ${aulaIdValue} - Exercício ${atividadeIdInt}`;
     
     // Só salvar se for primeira submissão ou nota melhor
     let resultado;
     if (!submissaoAnterior || nota > submissaoAnterior.nota) {
       resultado = await atividades.insertOne({ 
         usuarioId: userIdObj, 
-        atividadeId: parseInt(atividadeId),
+        aulaId: aulaIdValue,
+        atividadeId: atividadeIdInt,
         atividade,
         conteudo,
         nota, 
         data: new Date() 
       });
-      console.log(`✅ Atividade ${atividadeId} salva para usuário ${usuarioId} com nota ${nota} - ID: ${resultado.insertedId}`);
+      console.log(`✅ Atividade ${atividadeIdInt} da aula ${aulaIdValue} salva para usuário ${usuarioId} com nota ${nota} - ID: ${resultado.insertedId}`);
     } else {
       // Se nota igual ou pior, só registrar log
       console.log(`📌 Submissão rejeitada (nota ${nota} < melhor anterior ${submissaoAnterior.nota})`);
       resultado = { insertedId: submissaoAnterior._id };
     }
     
-    res.json({ msg: "Atividade salva!", id: resultado.insertedId, nota });
+    res.json({ msg: "Atividade salva!", id: resultado.insertedId, nota, aulaId: aulaIdValue });
   } catch (erro) {
     console.error("❌ Erro em /atividades:", erro);
     tratarErro(res, erro);
@@ -169,12 +175,13 @@ app.post("/atividades", async (req, res) => {
 app.get("/atividades/:usuarioId/:atividadeId/status", async (req, res) => {
   try {
     const { usuarioId, atividadeId } = req.params;
+    const aulaId = req.query.aulaId || 'default';
     if (!usuarioId || !atividadeId) {
       return res.status(400).json({ msg: "usuarioId e atividadeId são obrigatórios" });
     }
 
     const melhorSubmissao = await atividades.findOne(
-      { usuarioId: new ObjectId(usuarioId), atividadeId: parseInt(atividadeId) },
+      { usuarioId: new ObjectId(usuarioId), atividadeId: parseInt(atividadeId), aulaId },
       { sort: { nota: -1 } }
     );
 
@@ -310,13 +317,13 @@ function avaliarAtividade(atividadeId, codigo) {
 app.get("/ranks", async (req, res) => {
   try {
     const ranking = await atividades.aggregate([
-      // Pegar a maior nota por usuário + atividadeId (sem repetição)
+      // Pegar a maior nota por usuário + aulaId + atividadeId (sem repetição)
       {
         $sort: { nota: -1 }
       },
       {
         $group: {
-          _id: { usuarioId: '$usuarioId', atividadeId: '$atividadeId' },
+          _id: { usuarioId: '$usuarioId', aulaId: '$aulaId', atividadeId: '$atividadeId' },
           melhorNota: { $first: '$nota' }
         }
       },
@@ -379,13 +386,13 @@ app.get("/ranking-detalhado", async (req, res) => {
   try {
     console.log("📊 Carregando ranking detalhado...");
     const ranking = await atividades.aggregate([
-      // Pegar a maior nota por usuário + atividadeId
+      // Pegar a maior nota por usuário + aulaId + atividadeId
       {
         $sort: { nota: -1 }
       },
       {
         $group: {
-          _id: { usuarioId: '$usuarioId', atividadeId: '$atividadeId' },
+          _id: { usuarioId: '$usuarioId', aulaId: '$aulaId', atividadeId: '$atividadeId' },
           melhorNota: { $first: '$nota' }
         }
       },
@@ -393,7 +400,7 @@ app.get("/ranking-detalhado", async (req, res) => {
       {
         $group: {
           _id: '$_id.usuarioId',
-          atividades: { $push: { atividadeId: '$_id.atividadeId', nota: '$melhorNota' } },
+          atividades: { $push: { aulaId: '$_id.aulaId', atividadeId: '$_id.atividadeId', nota: '$melhorNota' } },
           pontuacaoTotal: { $sum: '$melhorNota' },
           totalAtividades: { $sum: 1 }
         }

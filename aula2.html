@@ -477,6 +477,7 @@
 
     <script>
         const API_URL = window.location.origin;
+        const AULA_ID = 2;
         
         window.addEventListener('DOMContentLoaded', () => {
             const usuarioId = localStorage.getItem('usuarioId');
@@ -597,6 +598,7 @@
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ 
                             usuarioId, 
+                            aulaId: AULA_ID,
                             atividadeId: atividadeAtual, 
                             resposta: respostaDigitada,
                             nota: nota 

@@ -491,7 +491,10 @@
                 // Criar grid de notas das atividades
                 let atividadesHTML = '';
                 if (usuario.atividades && usuario.atividades.length > 0) {
-                    usuario.atividades.sort((a, b) => a.atividadeId - b.atividadeId);
+                    usuario.atividades.sort((a, b) => {
+                        if (a.aulaId === b.aulaId) return a.atividadeId - b.atividadeId;
+                        return a.aulaId < b.aulaId ? -1 : 1;
+                    });
                     atividadesHTML = usuario.atividades.map(ativ => {
                         let badgeClass = '';
                         if (ativ.nota >= 10) {
@@ -501,7 +504,10 @@
                         } else {
                             badgeClass = 'low';
                         }
-                        return `<div class="activity-badge ${badgeClass}">A${ativ.atividadeId}: ${ativ.nota}</div>`;
+                        const atividadeLabel = ativ.aulaId === 'atividades'
+                            ? `Atividade ${ativ.atividadeId}`
+                            : `Aula ${ativ.aulaId} - A${ativ.atividadeId}`;
+                        return `<div class="activity-badge ${badgeClass}">${atividadeLabel}: ${ativ.nota}</div>`;
                     }).join('');
                 }
 

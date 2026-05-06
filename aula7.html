@@ -440,6 +440,7 @@
 
     <script>
         const API_URL = window.location.origin;
+        const AULA_ID = 7;
         let atividadeAtual = null;
 
         const atividades = {
@@ -518,6 +519,7 @@
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ 
                             usuarioId, 
+                            aulaId: AULA_ID,
                             atividadeId: atividadeAtual, 
                             resposta: resposta,
                             nota: nota 

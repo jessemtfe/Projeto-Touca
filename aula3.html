@@ -473,6 +473,7 @@
 
     <script>
         const API_URL = window.location.origin;
+        const AULA_ID = 3;
         let atividadeAtual = null;
 
         const atividades = {
@@ -592,6 +593,7 @@
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ 
                             usuarioId, 
+                            aulaId: AULA_ID,
                             atividadeId: atividadeAtual, 
                             resposta: respostaDigitada,
                             nota: nota 
