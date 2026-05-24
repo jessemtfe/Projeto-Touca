@@ -1,5 +1,3 @@
-https://projeto-touca.onrender.com/
-
 # 🎓 Turma da Touca - Plataforma Educacional de Python
 
 ## 📌 Sobre o Projeto
@@ -76,7 +74,7 @@ Além disso, o sistema de ranking ajuda a estimular o engajamento e a participa�
 
 ## 🔗 Deploy
 
-> Adicione aqui o link do projeto hospedado no Render.
+> https://projeto-touca.onrender.com/
 
 ---
 
